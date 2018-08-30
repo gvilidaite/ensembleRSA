@@ -4,7 +4,11 @@
 
 % So far only does whole timecourse classification
 
+<<<<<<< HEAD
+% close all
+=======
 close all
+>>>>>>> 3f08fc5bd36ffebe4840513c37ed1ede6d815f01
 clear all
 
 % SOME FLAGS TO SET:
@@ -30,7 +34,11 @@ NTimeWindows = 10; % number of time windows to separate the data into if
 % previous one. 
 
 
+<<<<<<< HEAD
+datapath = '/Users/babylab/Greta/2015_Ensembles_data/';
+=======
 datapath = '/Users/babylab/Greta/2015_Ensembles_data/'; % point this to the folder containing the prepared matlab files
+>>>>>>> 3f08fc5bd36ffebe4840513c37ed1ede6d815f01
 cd(datapath);
 
 
@@ -125,7 +133,11 @@ end
 
 accuracy = squeeze(mean(accuracy, 1)); % mean over subjects
 
+<<<<<<< HEAD
+figno = 5;
+=======
 figno = 1;
+>>>>>>> 3f08fc5bd36ffebe4840513c37ed1ede6d815f01
 
 if (timepoints == 1) % if all timepoints analysed together
 
