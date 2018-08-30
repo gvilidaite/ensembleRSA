@@ -11,21 +11,23 @@
 close all
 clear all
 
-% update this with the subject numbers (names of the folders that data is
-% stored in
-subjects = {'ASG1','ASG2','AY1','AY2','nl-0043_p1','nl-0045_p1','nl-0046_p1','nl-0047_p1','nl-0048_p1','PJK1','PJK2','VV1','VV2','WM','WM2'};
+%subjects = {'ASG1','ASG2','AY1','AY2','nl-0043_p1','nl-0045_p1','nl-0046_p1','nl-0047_p1','nl-0048_p1','PJK1','PJK2','VV1','VV2','WM'};
 
-EEGpath = '/Volumes/Denali_4D2/2015_Ensembles/Ensembles_MATLAB/'; % point this to the directory containing individual subject folders (on Denali_4D2)
-outputpath = '~/Greta/2015_Ensembles_data/'; % point this to where you want the prepared files saved - usually a local directory
+% 'nl-0014','nl-0034','nl-0043','nl-0045','nl-0046','nl-0047','nl-0048','nl-1671','nl-1672',
 
+subjects = {'nl-1676','nl-1677','nl-1678','nl-1681','nl-1684','nl-1685','nl-1686'};
 
-downsampling_factor = 4; % this downsamples EEG data to make it more manageable
+% EEGpath = '~/Greta/2015_Ensembles_data/EEG_files/';
+EEGpath = '~/Greta/2018_Ensemble_greyscale_data/EEG_files/';
+
+cd(EEGpath);
+
+downsampling_factor = 4;
 
 % find and open all Run Time Segment files and put them in one matrix:
 
 for s = 1:length(subjects)
-    
-    cd(EEGpath)
+    s
     allSeg = dir(strcat(subjects{s},'/RTSeg*')); % get info (names) of all segment files
 
     count = 0;
@@ -37,18 +39,19 @@ for s = 1:length(subjects)
 
         if ~isempty(TimeLine) % checks that there is some information in there
             count = count + 1;
-
             % adding each structure's info onto the end of our vectors
-            ind_start = count * length(TimeLine) - length(TimeLine) + 1;
-            ind_end = count * length(TimeLine);
+            if count == 1
+                ind_start = 1;
+                ind_end = length(TimeLine);
+            else
+                ind_start = ind_end + 1;
+                ind_end = length(TimeLine) + ind_start - 1;
+            end
 
             currentSeg = extractfield(TimeLine, 'cndNmb');
             condNs(ind_start:ind_end) = currentSeg;
-
             currentSeg = extractfield(TimeLine, 'trlNmb');
             trialNs(ind_start:ind_end) = currentSeg;
-
-
         end
     end
 
@@ -60,10 +63,16 @@ for s = 1:length(subjects)
     count = 0;
     for c = 1:6 % for each condition
 
-        curExemps = exempcodeSeg((condNs==c)); % retrieving unique exemplar numebrs just for this condition
+        curExemps = exempcodeSeg((condNs==c)); % retrieving unique exemplar numbers just for this condition
+        c
+        exempcodeSeg(1:20)
+        condNs(1:20)
+        curExemps(1:20)
+        clear allRaw
         allRaw = dir(strcat(subjects{s},'/Raw_c00',num2str(c),'_t*')); % get info (names) of all segment files
-        for t = 1:length(allRaw)
 
+        for t = 1:length(allRaw)
+            
             count = count + 1;
 
             EEG = load(strcat(subjects{s},'/','Raw_c',num2str(c,'%03d'),'_t',num2str(t,'%03d'),'.mat')); % loading the file
@@ -83,6 +92,6 @@ for s = 1:length(subjects)
         end
     end
 
-    save(strcat(outputpath,subjects{s},'_data4RSA.mat'), 'EEGdata', 'labelsByCond', 'labelsByExemp', 'EEGdata_downsampled')
+    save(strcat('~/Greta/2018_Ensemble_greyscale_data/Matclass_ready_08_2018/',subjects{s},'_data4RSA.mat'), 'EEGdata', 'labelsByCond', 'labelsByExemp', 'EEGdata_downsampled')
 end
 
